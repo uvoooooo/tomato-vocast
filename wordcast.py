@@ -77,14 +77,14 @@ def merge_mp3s_ffmpeg(paths: list[Path], pause_ms: int, out_file: Path) -> None:
     """Pad each segment with trailing silence, then concat into one MP3."""
     ffmpeg = shutil.which("ffmpeg")
     if not ffmpeg:
-        raise SystemExit(
+        raise RuntimeError(
             "ffmpeg not found on PATH. Install it (e.g. macOS: brew install ffmpeg) "
             "to merge segments into one MP3."
         )
 
     n = len(paths)
     if n == 0:
-        raise SystemExit("No segments to merge.")
+        raise RuntimeError("No segments to merge.")
 
     pause_sec = max(0.0, pause_ms / 1000.0)
     inputs: list[str] = []
@@ -117,7 +117,25 @@ def merge_mp3s_ffmpeg(paths: list[Path], pause_ms: int, out_file: Path) -> None:
     ]
     proc = subprocess.run(cmd, capture_output=True, text=True)
     if proc.returncode != 0:
-        raise SystemExit(f"ffmpeg failed:\n{proc.stderr or proc.stdout}")
+        raise RuntimeError(f"ffmpeg failed:\n{proc.stderr or proc.stdout}")
+
+
+async def render_markdown_to_mp3(markdown: str, voice: str, pause_ms: int, output: Path) -> int:
+    """
+    Parse markdown, synthesize phrases with Edge TTS, merge to one MP3.
+    Returns number of phrases spoken.
+    """
+    phrases = extract_phrases_from_markdown(markdown)
+    if not phrases:
+        raise ValueError(
+            "No list items found. Use Markdown bullets (- word) or numbered (1. word) lines."
+        )
+    with tempfile.TemporaryDirectory(prefix="wordcast_") as td:
+        tmp = Path(td)
+        paths = await synth_all(phrases, voice, tmp)
+        output.parent.mkdir(parents=True, exist_ok=True)
+        merge_mp3s_ffmpeg(paths, pause_ms, output)
+    return len(phrases)
 
 
 def main() -> None:
@@ -138,24 +156,20 @@ def main() -> None:
         sys.exit(1)
 
     text = args.markdown.read_text(encoding="utf-8")
-    phrases = extract_phrases_from_markdown(text)
-    if not phrases:
-        print(
-            "No list items found. Use Markdown bullets (- word) or numbered (1. word) lines.",
-            file=sys.stderr,
-        )
+
+    async def run() -> int:
+        return await render_markdown_to_mp3(text, args.voice, args.pause_ms, args.output)
+
+    try:
+        n = asyncio.run(run())
+    except ValueError as e:
+        print(str(e), file=sys.stderr)
+        sys.exit(1)
+    except RuntimeError as e:
+        print(str(e), file=sys.stderr)
         sys.exit(1)
 
-    print(f"Found {len(phrases)} items; voice={args.voice}")
-
-    async def run() -> None:
-        with tempfile.TemporaryDirectory(prefix="wordcast_") as td:
-            tmp = Path(td)
-            paths = await synth_all(phrases, args.voice, tmp)
-            args.output.parent.mkdir(parents=True, exist_ok=True)
-            merge_mp3s_ffmpeg(paths, args.pause_ms, args.output)
-
-    asyncio.run(run())
+    print(f"Found {n} items; voice={args.voice}")
     print(f"Wrote {args.output.resolve()}")
 
 
