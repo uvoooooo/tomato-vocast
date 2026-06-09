@@ -769,6 +769,208 @@
         pointer-events: none;
         opacity: 0.8;
       }
+
+      /* ── Word library module (independent) ── */
+      .card--library {
+        margin-top: clamp(1.25rem, 3vw, 2rem);
+        animation-delay: 0.3s;
+      }
+
+      .lib-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(280px, 0.85fr);
+        gap: clamp(1rem, 3vw, 2rem);
+        align-items: start;
+        padding: 1.25rem 1.35rem 1.5rem;
+      }
+
+      @media (max-width: 900px) {
+        .lib-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .lib-textarea {
+        min-height: 150px;
+        padding: 0.9rem 1rem;
+        border: 1px solid rgba(18, 16, 14, 0.1);
+        border-radius: var(--radius-md);
+        background: var(--paper-3);
+      }
+
+      .lib-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.6rem;
+        align-items: center;
+        margin-top: 0.85rem;
+      }
+
+      .btn-soft {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        padding: 0.6rem 1rem;
+        border-radius: var(--radius-md);
+        cursor: pointer;
+        font-family: "Recursive", monospace;
+        font-variation-settings: "MONO" 1, "CASL" 0.35;
+        font-size: 0.78rem;
+        letter-spacing: 0.04em;
+        color: var(--stem);
+        background: rgba(255, 255, 255, 0.65);
+        border: 1px solid rgba(26, 56, 41, 0.18);
+        transition: background 0.2s, border-color 0.2s, transform 0.15s var(--ease);
+      }
+
+      .btn-soft:hover {
+        background: #fff;
+        border-color: var(--stem-soft);
+        transform: translateY(-1px);
+      }
+
+      .btn-soft--danger {
+        color: var(--tomato-deep);
+        border-color: rgba(192, 68, 58, 0.25);
+      }
+
+      .btn-soft--danger:hover {
+        border-color: var(--tomato);
+      }
+
+      .lib-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.4rem;
+        margin-top: 1rem;
+        max-height: 190px;
+        overflow-y: auto;
+        padding-right: 0.25rem;
+      }
+
+      .lib-word {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.3rem;
+        padding: 0.28rem 0.32rem 0.28rem 0.62rem;
+        border-radius: 999px;
+        font-family: "Recursive", monospace;
+        font-variation-settings: "MONO" 1;
+        font-size: 0.7rem;
+        color: var(--stem-soft);
+        background: rgba(26, 56, 41, 0.07);
+        border: 1px solid rgba(26, 56, 41, 0.1);
+        max-width: 100%;
+      }
+
+      .lib-word span {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        max-width: 160px;
+      }
+
+      .lib-word button {
+        border: none;
+        background: transparent;
+        cursor: pointer;
+        color: var(--ink-muted);
+        font-size: 0.95rem;
+        line-height: 1;
+        padding: 0 0.1rem;
+        border-radius: 50%;
+        transition: color 0.15s;
+      }
+
+      .lib-word button:hover {
+        color: var(--tomato-deep);
+      }
+
+      .lib-word--empty {
+        color: var(--ink-muted);
+        font-style: italic;
+        background: transparent;
+        border: none;
+        padding-left: 0;
+      }
+
+      /* ── Library storage-path setting ── */
+      .lib-settings {
+        padding: 1rem 1.35rem;
+        border-bottom: 1px solid rgba(18, 16, 14, 0.06);
+        background: rgba(255, 255, 255, 0.3);
+      }
+
+      .lib-settings > label {
+        display: block;
+        font-family: "Recursive", monospace;
+        font-variation-settings: "MONO" 1;
+        font-size: 0.68rem;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--ink-soft);
+        margin-bottom: 0.5rem;
+      }
+
+      .lib-path-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.55rem;
+        align-items: center;
+      }
+
+      .lib-path-input {
+        flex: 1 1 280px;
+        min-width: 0;
+        font-family: "Recursive", monospace;
+        font-variation-settings: "MONO" 1;
+        font-size: 0.82rem;
+        padding: 0.6rem 0.8rem;
+        border-radius: var(--radius-md);
+        border: 1px solid rgba(18, 16, 14, 0.12);
+        background: var(--paper-3);
+        color: var(--ink);
+      }
+
+      .lib-path-input:focus {
+        outline: none;
+        border-color: rgba(192, 68, 58, 0.4);
+        box-shadow: 0 0 0 3px var(--tomato-glow);
+      }
+
+      .lib-migrate {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+        font-family: "Recursive", monospace;
+        font-variation-settings: "MONO" 1;
+        font-size: 0.74rem;
+        color: var(--ink-soft);
+        cursor: pointer;
+        white-space: nowrap;
+      }
+
+      .lib-migrate input {
+        accent-color: var(--tomato);
+        cursor: pointer;
+      }
+
+      .lib-path-hint {
+        margin: 0.55rem 0 0;
+        font-size: 0.74rem;
+        color: var(--ink-muted);
+        font-family: "Recursive", monospace;
+        font-variation-settings: "MONO" 1, "CASL" 0.3;
+        word-break: break-all;
+      }
+
+      .lib-path-hint.error {
+        color: var(--tomato-deep);
+      }
+
+      .lib-path-hint.ok {
+        color: var(--stem-soft);
+      }
     </style>
   </head>
   <body>
@@ -890,6 +1092,98 @@
           </div>
         </aside>
       </main>
+
+      <section class="card card--library" id="library-module" aria-labelledby="library-label">
+        <div class="card-head">
+          <h2 id="library-label" data-lib-i18n="title">Word library</h2>
+          <span class="hint">
+            <span data-lib-i18n="stat">Saved</span> · <strong id="lib-total">0</strong>
+          </span>
+        </div>
+        <div class="lib-settings">
+          <label for="lib-path" data-lib-i18n="path-label">Storage location (local file or folder)</label>
+          <div class="lib-path-row">
+            <input type="text" id="lib-path" class="lib-path-input" spellcheck="false" placeholder="/Users/you/vocast.db" />
+            <label class="lib-migrate">
+              <input type="checkbox" id="lib-migrate" />
+              <span data-lib-i18n="migrate-label">Move existing words</span>
+            </label>
+            <button type="button" class="btn-soft" id="lib-path-apply" data-lib-i18n="path-apply">Apply</button>
+          </div>
+          <p class="lib-path-hint" id="lib-path-hint"></p>
+        </div>
+        <div class="lib-grid">
+          <div>
+            <div class="field">
+              <label for="lib-input" data-lib-i18n="add-label">Add words (one per line or - bullets)</label>
+              <textarea id="lib-input" class="lib-textarea" spellcheck="false" placeholder="- serendipity&#10;- ephemeral&#10;ubiquitous"></textarea>
+            </div>
+            <div class="lib-actions">
+              <button type="button" class="btn-soft" id="lib-add" data-lib-i18n="add-btn">Save to library</button>
+              <button type="button" class="btn-soft btn-soft--danger" id="lib-clear" data-lib-i18n="clear-btn">Clear all</button>
+            </div>
+            <div class="lib-list" id="lib-list" aria-live="polite"></div>
+          </div>
+
+          <div>
+            <div class="field">
+              <label for="lib-voice" data-lib-i18n="voice-label">Voice</label>
+              <select id="lib-voice"></select>
+            </div>
+            <div class="field">
+              <label for="lib-count">
+                <span data-lib-i18n="count-label">Words to draw</span>
+                <span id="lib-count-lbl">20</span>
+              </label>
+              <div class="slider-track">
+                <input type="range" id="lib-count" min="1" max="100" step="1" value="20" />
+              </div>
+            </div>
+            <div class="field">
+              <label for="lib-pause">
+                <span data-lib-i18n="pause-label">Pause after each word</span>
+                <span id="lib-pause-lbl">700 ms</span>
+              </label>
+              <div class="slider-track">
+                <input type="range" id="lib-pause" min="0" max="2500" step="50" value="700" />
+              </div>
+            </div>
+            <button type="button" class="btn-primary" id="lib-go">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M12 3v3m0 12v3M3 12h3m12 0h3M5.6 5.6l2.1 2.1m8.6 8.6l2.1 2.1m0-12.8l-2.1 2.1M7.7 16.3l-2.1 2.1" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+              </svg>
+              <span data-lib-i18n="gen-btn">Draw random & generate</span>
+            </button>
+            <div class="progress-wrap" id="lib-progress" aria-hidden="true">
+              <div class="progress-bar"></div>
+            </div>
+            <div class="status" id="lib-status" role="status"></div>
+
+            <div class="player-card" id="lib-player-card" hidden>
+              <div class="player-meta">
+                <div class="player-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <path d="M9 18V5l12-2v13" stroke-linecap="round" stroke-linejoin="round" />
+                    <circle cx="6" cy="18" r="3" fill="currentColor" stroke="none" />
+                    <circle cx="18" cy="16" r="3" fill="currentColor" stroke="none" />
+                  </svg>
+                </div>
+                <div>
+                  <p class="player-title" data-lib-i18n="player-title">Random vocast ready</p>
+                  <p class="player-sub" id="lib-player-sub"></p>
+                </div>
+              </div>
+              <audio id="lib-player" controls></audio>
+              <a class="btn-download" id="lib-download" href="#" download="vocast-random.mp3">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                  <path d="M12 3v12m0 0l-4-4m4 4l4-4M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+                <span data-lib-i18n="download-btn">Download vocast-random.mp3</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
 
       <footer>
         <span data-i18n="footer-ffmpeg">Requires <code>ffmpeg</code> on your machine to merge segments.</span>
@@ -1206,6 +1500,378 @@
         applyLang();
         updatePreview();
         loadVoices();
+      })();
+    </script>
+
+    <!-- Independent word-library module (does not touch the editor above) -->
+    <script>
+      (function () {
+        const LIB_I18N = {
+          en: {
+            title: "Word library",
+            stat: "Saved",
+            "add-label": "Add words (one per line or - bullets)",
+            "add-btn": "Save to library",
+            "clear-btn": "Clear all",
+            "voice-label": "Voice",
+            "count-label": "Words to draw",
+            "pause-label": "Pause after each word",
+            "gen-btn": "Draw random & generate",
+            "download-btn": "Download vocast-random.mp3",
+            "player-title": "Random vocast ready",
+            "empty": "Library is empty — add some words above.",
+            "added": "Added {n} new words. Library now has {total}.",
+            "added-none": "No new words (duplicates skipped). Library has {total}.",
+            "rendering": "Drawing {n} random words and synthesizing…",
+            "done": "Generated {n} random words — preview or download below.",
+            "lib-empty-render": "Add words to the library first.",
+            "player-sub": "{n} words · British English",
+            "confirm-clear": "Clear the entire word library?",
+            "add-empty": "Type some words to add.",
+            "path-label": "Storage location (local file or folder)",
+            "migrate-label": "Move existing words",
+            "path-apply": "Apply",
+            "path-current": "Stored at: {path}",
+            "path-updated": "Storage location updated → {path}",
+            "path-empty": "Enter a file or folder path.",
+          },
+          zh: {
+            title: "单词库",
+            stat: "已存",
+            "add-label": "添加单词（每行一个，或用 - 列表）",
+            "add-btn": "存入词库",
+            "clear-btn": "清空",
+            "voice-label": "声音",
+            "count-label": "抽取数量",
+            "pause-label": "词条后静音",
+            "gen-btn": "随机抽取并生成音频",
+            "download-btn": "下载 vocast-random.mp3",
+            "player-title": "随机音频已就绪",
+            "empty": "词库为空——先在上方添加单词。",
+            "added": "新增 {n} 个单词，词库共 {total} 个。",
+            "added-none": "没有新增（重复已跳过），词库共 {total} 个。",
+            "rendering": "正在随机抽取 {n} 个单词并合成…",
+            "done": "已生成 {n} 个随机单词，可试听或下载。",
+            "lib-empty-render": "请先向词库添加单词。",
+            "player-sub": "{n} 个单词 · 英式英语",
+            "confirm-clear": "确定清空整个词库吗？",
+            "add-empty": "请先输入要添加的单词。",
+            "path-label": "存储位置（本地文件或文件夹）",
+            "migrate-label": "搬移已有单词",
+            "path-apply": "应用",
+            "path-current": "存储于：{path}",
+            "path-updated": "存储位置已更新 → {path}",
+            "path-empty": "请输入文件或文件夹路径。",
+          },
+        };
+
+        let lang = localStorage.getItem("vocast-lang") || "en";
+
+        const el = (id) => document.getElementById(id);
+        const input = el("lib-input");
+        const addBtn = el("lib-add");
+        const clearBtn = el("lib-clear");
+        const list = el("lib-list");
+        const total = el("lib-total");
+        const voice = el("lib-voice");
+        const count = el("lib-count");
+        const countLbl = el("lib-count-lbl");
+        const pause = el("lib-pause");
+        const pauseLbl = el("lib-pause-lbl");
+        const go = el("lib-go");
+        const progress = el("lib-progress");
+        const status = el("lib-status");
+        const playerCard = el("lib-player-card");
+        const player = el("lib-player");
+        const playerSub = el("lib-player-sub");
+        const download = el("lib-download");
+        const pathInput = el("lib-path");
+        const pathApply = el("lib-path-apply");
+        const pathHint = el("lib-path-hint");
+        const migrate = el("lib-migrate");
+
+        let blobUrl = null;
+
+        function t(key, vars) {
+          let s = (LIB_I18N[lang] && LIB_I18N[lang][key]) || LIB_I18N.en[key] || key;
+          if (vars) {
+            for (const [k, v] of Object.entries(vars)) s = s.replace("{" + k + "}", v);
+          }
+          return s;
+        }
+
+        function applyLibLang() {
+          document.querySelectorAll("[data-lib-i18n]").forEach(function (node) {
+            node.textContent = t(node.getAttribute("data-lib-i18n"));
+          });
+        }
+
+        function setStatus(msg, kind) {
+          status.textContent = msg || "";
+          status.className = "status" + (kind ? " " + kind : "");
+        }
+
+        function setProgress(active) {
+          progress.classList.toggle("is-active", active);
+          progress.setAttribute("aria-hidden", active ? "false" : "true");
+        }
+
+        function hidePlayer() {
+          playerCard.hidden = true;
+          if (blobUrl) {
+            URL.revokeObjectURL(blobUrl);
+            blobUrl = null;
+          }
+        }
+
+        function renderList(data) {
+          total.textContent = String(data.total || 0);
+          list.innerHTML = "";
+          if (!data.words || !data.words.length) {
+            const empty = document.createElement("span");
+            empty.className = "lib-word lib-word--empty";
+            empty.textContent = t("empty");
+            list.appendChild(empty);
+            return;
+          }
+          for (const w of data.words) {
+            const tag = document.createElement("span");
+            tag.className = "lib-word";
+            const label = document.createElement("span");
+            label.textContent = w.text;
+            label.title = w.text;
+            const del = document.createElement("button");
+            del.type = "button";
+            del.textContent = "×";
+            del.setAttribute("aria-label", "delete");
+            del.addEventListener("click", function () {
+              deleteWord(w.id);
+            });
+            tag.appendChild(label);
+            tag.appendChild(del);
+            list.appendChild(tag);
+          }
+        }
+
+        async function loadLibrary() {
+          try {
+            const res = await fetch("/api/library");
+            if (!res.ok) throw new Error("library " + res.status);
+            renderList(await res.json());
+          } catch (e) {
+            setStatus(String(e.message || e), "error");
+          }
+        }
+
+        function setPathHint(msg, kind) {
+          pathHint.textContent = msg || "";
+          pathHint.className = "lib-path-hint" + (kind ? " " + kind : "");
+        }
+
+        async function loadSettings() {
+          try {
+            const res = await fetch("/api/library/settings");
+            if (!res.ok) throw new Error("settings " + res.status);
+            const s = await res.json();
+            if (document.activeElement !== pathInput) pathInput.value = s.db_path;
+            setPathHint(t("path-current", { path: s.db_path }));
+          } catch (e) {
+            setPathHint(String(e.message || e), "error");
+          }
+        }
+
+        async function applySettings() {
+          const value = pathInput.value.trim();
+          if (!value) {
+            setPathHint(t("path-empty"), "error");
+            return;
+          }
+          pathApply.disabled = true;
+          try {
+            const res = await fetch("/api/library/settings", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ db_path: value, migrate: migrate.checked }),
+            });
+            const s = await res.json();
+            if (!res.ok) throw new Error(s.detail || res.statusText);
+            pathInput.value = s.db_path;
+            setPathHint(t("path-updated", { path: s.db_path }), "ok");
+            await loadLibrary();
+          } catch (e) {
+            setPathHint(String(e.message || e), "error");
+          } finally {
+            pathApply.disabled = false;
+          }
+        }
+
+        async function addWords() {
+          const text = input.value.trim();
+          if (!text) {
+            setStatus(t("add-empty"), "error");
+            return;
+          }
+          addBtn.disabled = true;
+          try {
+            const res = await fetch("/api/library/add", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ text: text }),
+            });
+            const j = await res.json();
+            if (!res.ok) throw new Error(j.detail || res.statusText);
+            input.value = "";
+            setStatus(
+              j.added
+                ? t("added", { n: j.added, total: j.total })
+                : t("added-none", { total: j.total }),
+              "ok"
+            );
+            await loadLibrary();
+          } catch (e) {
+            setStatus(String(e.message || e), "error");
+          } finally {
+            addBtn.disabled = false;
+          }
+        }
+
+        async function deleteWord(id) {
+          try {
+            const res = await fetch("/api/library/" + id, { method: "DELETE" });
+            if (!res.ok) throw new Error("delete " + res.status);
+            await loadLibrary();
+          } catch (e) {
+            setStatus(String(e.message || e), "error");
+          }
+        }
+
+        async function clearLibrary() {
+          if (!window.confirm(t("confirm-clear"))) return;
+          try {
+            const res = await fetch("/api/library/clear", { method: "POST" });
+            if (!res.ok) throw new Error("clear " + res.status);
+            hidePlayer();
+            setStatus("");
+            await loadLibrary();
+          } catch (e) {
+            setStatus(String(e.message || e), "error");
+          }
+        }
+
+        async function loadVoices() {
+          try {
+            const res = await fetch("/api/voices");
+            if (!res.ok) throw new Error("voices " + res.status);
+            const listData = await res.json();
+            voice.innerHTML = "";
+            const fallback = "en-GB-SoniaNeural";
+            if (!listData.length) {
+              const o = document.createElement("option");
+              o.value = fallback;
+              o.textContent = fallback;
+              voice.appendChild(o);
+              return;
+            }
+            for (const v of listData) {
+              const o = document.createElement("option");
+              o.value = v.id;
+              o.textContent = v.label;
+              voice.appendChild(o);
+            }
+            const prefer = listData.find((x) => x.id === fallback);
+            voice.value = prefer ? prefer.id : listData[0].id;
+          } catch (e) {
+            voice.innerHTML = "";
+            const o = document.createElement("option");
+            o.value = "en-GB-SoniaNeural";
+            o.textContent = "en-GB-SoniaNeural";
+            voice.appendChild(o);
+          }
+        }
+
+        async function randomRender() {
+          setStatus(t("rendering", { n: count.value }));
+          setProgress(true);
+          go.disabled = true;
+          hidePlayer();
+
+          const btnIcon = go.querySelector("svg");
+          const btnLabel = go.querySelector("span");
+          const spinner = document.createElement("span");
+          spinner.className = "spinner";
+          btnIcon.hidden = true;
+          go.insertBefore(spinner, btnLabel);
+
+          try {
+            const res = await fetch("/api/library/random-render", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                count: Number(count.value),
+                voice: voice.value,
+                pause_ms: Number(pause.value),
+              }),
+            });
+            if (!res.ok) {
+              let detail = res.statusText;
+              try {
+                const j = await res.json();
+                detail = typeof j.detail === "string" ? j.detail : JSON.stringify(j.detail);
+              } catch (_) {}
+              throw new Error(detail);
+            }
+            const n = res.headers.get("X-Phrase-Count") || count.value;
+            const blob = await res.blob();
+            blobUrl = URL.createObjectURL(blob);
+            player.src = blobUrl;
+            download.href = blobUrl;
+            download.download = "vocast-random.mp3";
+            playerSub.textContent = t("player-sub", { n: n });
+            playerCard.hidden = false;
+            setStatus(t("done", { n: n }), "ok");
+            playerCard.scrollIntoView({ behavior: "smooth", block: "nearest" });
+          } catch (e) {
+            setStatus(String(e.message || e), "error");
+          } finally {
+            spinner.remove();
+            btnIcon.hidden = false;
+            setProgress(false);
+            go.disabled = false;
+          }
+        }
+
+        count.addEventListener("input", function () {
+          countLbl.textContent = count.value;
+        });
+        pause.addEventListener("input", function () {
+          pauseLbl.textContent = pause.value + " ms";
+        });
+        addBtn.addEventListener("click", addWords);
+        clearBtn.addEventListener("click", clearLibrary);
+        go.addEventListener("click", randomRender);
+        pathApply.addEventListener("click", applySettings);
+        pathInput.addEventListener("keydown", function (e) {
+          if (e.key === "Enter") {
+            e.preventDefault();
+            applySettings();
+          }
+        });
+
+        // Re-render this module's labels when the shared language toggle changes.
+        const langEn = el("lang-en");
+        const langZh = el("lang-zh");
+        if (langEn) langEn.addEventListener("click", function () { lang = "en"; applyLibLang(); renderListLangRefresh(); loadSettings(); });
+        if (langZh) langZh.addEventListener("click", function () { lang = "zh"; applyLibLang(); renderListLangRefresh(); loadSettings(); });
+
+        function renderListLangRefresh() {
+          const empty = list.querySelector(".lib-word--empty");
+          if (empty) empty.textContent = t("empty");
+        }
+
+        applyLibLang();
+        loadVoices();
+        loadLibrary();
+        loadSettings();
       })();
     </script>
   </body>

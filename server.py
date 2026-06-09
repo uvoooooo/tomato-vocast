@@ -20,7 +20,14 @@ from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 from starlette.background import BackgroundTask
 
-from wordcast import DEFAULT_VOICE, render_markdown_to_mp3
+import db
+from wordcast import (
+    BULLET,
+    NUMBERED,
+    DEFAULT_VOICE,
+    render_markdown_to_mp3,
+    strip_md_inline,
+)
 
 WEB_DIR = Path(__file__).resolve().parent / "web"
 
@@ -31,6 +38,41 @@ class RenderRequest(BaseModel):
     pause_ms: int = Field(700, ge=0, le=5000)
 
 
+class LibraryAddRequest(BaseModel):
+    text: str = Field(..., min_length=1)
+
+
+class RandomRenderRequest(BaseModel):
+    count: int = Field(20, ge=1, le=200)
+    voice: str = DEFAULT_VOICE
+    pause_ms: int = Field(700, ge=0, le=5000)
+
+
+class SettingsRequest(BaseModel):
+    db_path: str = Field(..., min_length=1)
+    migrate: bool = False
+
+
+def parse_words(text: str) -> list[str]:
+    """Extract words from bullet/numbered or plain lines (deduped, order-preserving)."""
+    seen: set[str] = set()
+    out: list[str] = []
+    for raw in text.splitlines():
+        line = raw.strip()
+        if not line or line.startswith("#") or line.startswith("<!--"):
+            continue
+        m = BULLET.match(raw) or NUMBERED.match(raw)
+        phrase = strip_md_inline(m.group(1) if m else line)
+        if not phrase:
+            continue
+        key = phrase.casefold()
+        if key in seen:
+            continue
+        seen.add(key)
+        out.append(phrase)
+    return out
+
+
 def _unlink(path: Path) -> None:
     try:
         path.unlink(missing_ok=True)
@@ -39,6 +81,92 @@ def _unlink(path: Path) -> None:
 
 
 app = FastAPI(title="Wordcast")
+
+db.init_db()
+
+
+# ── Word library (independent module) ──────────────────────────────────────
+def _settings_state() -> dict:
+    p = db.get_db_path()
+    return {
+        "db_path": str(p),
+        "default_path": str(db.default_db_path()),
+        "exists": p.exists(),
+        "total": db.count(),
+    }
+
+
+@app.get("/api/library/settings")
+async def api_library_settings_get() -> dict:
+    """Where the word library is stored on disk."""
+    return _settings_state()
+
+
+@app.post("/api/library/settings")
+async def api_library_settings_set(body: SettingsRequest) -> dict:
+    """Choose a different local file/folder for the word library."""
+    try:
+        db.set_db_path(body.db_path, migrate=body.migrate)
+    except (OSError, ValueError) as e:
+        raise HTTPException(status_code=400, detail=f"Cannot use that path: {e}") from e
+    return _settings_state()
+
+
+@app.get("/api/library")
+async def api_library_list() -> dict:
+    """Current library size and recent words (newest first)."""
+    return {"total": db.count(), "words": db.all_words(limit=500)}
+
+
+@app.post("/api/library/add")
+async def api_library_add(body: LibraryAddRequest) -> dict:
+    """Save words (bullets, numbered, or one-per-line) into the local library."""
+    words = parse_words(body.text)
+    if not words:
+        raise HTTPException(status_code=400, detail="No words found to add.")
+    added = db.add_words(words)
+    return {"added": added, "total": db.count()}
+
+
+@app.delete("/api/library/{word_id}")
+async def api_library_delete(word_id: int) -> dict:
+    db.delete_word(word_id)
+    return {"total": db.count()}
+
+
+@app.post("/api/library/clear")
+async def api_library_clear() -> dict:
+    db.clear()
+    return {"total": db.count()}
+
+
+@app.post("/api/library/random-render")
+async def api_library_random_render(body: RandomRenderRequest) -> FileResponse:
+    """Pick N random words from the library and render them to one MP3."""
+    words = db.random_words(body.count)
+    if not words:
+        raise HTTPException(status_code=400, detail="Word library is empty. Add words first.")
+
+    markdown = "\n".join(f"- {w}" for w in words)
+    fd, raw_path = tempfile.mkstemp(suffix=".mp3")
+    os.close(fd)
+    path = Path(raw_path)
+    try:
+        n = await render_markdown_to_mp3(markdown, body.voice, body.pause_ms, path)
+    except ValueError as e:
+        _unlink(path)
+        raise HTTPException(status_code=400, detail=str(e)) from e
+    except RuntimeError as e:
+        _unlink(path)
+        raise HTTPException(status_code=500, detail=str(e)) from e
+
+    return FileResponse(
+        path,
+        media_type="audio/mpeg",
+        filename="vocast-random.mp3",
+        headers={"X-Phrase-Count": str(n)},
+        background=BackgroundTask(_unlink, path),
+    )
 
 
 @app.get("/api/voices")

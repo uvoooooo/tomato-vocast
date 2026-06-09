@@ -2,3 +2,5 @@
 __pycache__/
 *.mp3
 .DS_Store
+vocast.db
+vocast_config.json
